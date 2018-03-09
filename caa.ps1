@@ -20,10 +20,13 @@ Function Add-DTLRAccounts {
 		[Parameter(Mandatory=$true)]
 		[ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
 		[ValidatePattern('\.csv$')]
-		[string]$File,
-		[Parameter()]
-		[ValidateSet("User","Store","Service")]
-		[string]$AcctType = "User",
-		[switch]$Verbose = $false
+		[string]$File
 	)
+
+	$Accts = Import-Csv -Path $File
+
+	ForEach ($Acct in $Accts) {
+		$storeNumber = $Acct.dtlr_key
+		$storeDisplayName = $Acct.store_long
+	}
 }
