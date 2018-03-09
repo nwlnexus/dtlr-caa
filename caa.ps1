@@ -1,6 +1,6 @@
 Function Get-RandomPassword {
 	Param (
-		[int]$length = 10
+		[int]$Length = 10
 	)
 
 	$ascii = $NULL
@@ -8,7 +8,7 @@ Function Get-RandomPassword {
 		$ascii +=,[char][byte]$a
 	}
 
-	For ($loop = 1; $loop -le $length; $loop++) {
+	For ($loop = 1; $loop -le $Length; $loop++) {
 		$tmpPassword += ($ascii | Get-Random)
 	}
 
@@ -17,6 +17,13 @@ Function Get-RandomPassword {
 
 Function Add-DTLRAccounts {
 	Param (
-		[string]$file
+		[Parameter(Mandatory=$true)]
+		[ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
+		[ValidatePattern('\.csv$')]
+		[string]$File,
+		[Parameter()]
+		[ValidateSet("User","Store","Service")]
+		[string]$AcctType = "User",
+		[switch]$Verbose = $false
 	)
 }
