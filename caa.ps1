@@ -23,10 +23,19 @@ Function Add-DTLRAccounts {
 		[string]$File
 	)
 
-	$Accts = Import-Csv -Path $File
+	$Accts = Import-Csv -Path $File -Delimiter ","
 
 	ForEach ($Acct in $Accts) {
 		$storeNumber = $Acct.dtlr_key
-		$storeDisplayName = $Acct.store_long
+		$storeFirstName = $Acct.dtlr_key
+		$storeLastName = $Acct.store_long
+		$storeDisplayName = $storeFirstName + " " + $storeLastName
+		$OU = "OU=Villa,OU=Stores,OU=Users,OU=Corporate Office,OU=DTLR,DC=levtrannt,DC=lan"
+		$UPN = $Acct.dtlr_key + "@dtlr.com"
+
+		New-ADUser -Name "$storeDisplayName" -DisplayName "$storeDisplayName" -SamAccountName $Acct.dtlr_key
+		 -GivenName $Acct.dtlr_key -Surname $Acct.store_long -UserPrincipalName $UPN -Path "$OU"
+		 -PasswordNeverExpires $true -ChangePasswordAtLogon $false -CannotChangePassword $true -Department "Operations"
+		 -StreetAddress $Acct.store_address -PostalCode $Acct.store_zip -State $Acct.store_state -City $Acct.store_city
 	}
 }
