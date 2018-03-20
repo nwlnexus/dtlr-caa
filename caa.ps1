@@ -13,83 +13,75 @@
     http://www.asciitable.com/
     https://gist.github.com/PowerShellSith
 #>
-function New-RandomPassword
-{
+function New-RandomPassword {
     [CmdletBinding()]
     [OutputType([string])]
     Param
     (
         # Length, Type uint32, Length of the random string to create.
-        [Parameter(Mandatory=$true,
-                   Position=0)]
+        [Parameter(Mandatory = $true,
+            Position = 0)]
         [ValidatePattern('[0-9]+')]
-        [ValidateRange(1,100)]
+        [ValidateRange(1, 100)]
         [uint32]
         $Length,
 
         # Lowercase, Type switch, Use lowercase characters.
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [switch]
-        $Lowercase=$false,
+        $Lowercase = $false,
 
         # Uppercase, Type switch, Use uppercase characters.
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [switch]
-        $Uppercase=$false,
+        $Uppercase = $false,
 
         # Numbers, Type switch, Use alphanumeric characters.
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [switch]
-        $Numbers=$false,
+        $Numbers = $false,
 
         # Symbols, Type switch, Use symbol characters.
-        [Parameter(Mandatory=$false)]
-        [switch]$Symbols=$false
-        )
-    Begin
-    {
-        if (-not($Lowercase -or $Uppercase -or $Numbers -or $Symbols))
-        {
+        [Parameter(Mandatory = $false)]
+        [switch]$Symbols = $false
+    )
+    Begin {
+        if (-not($Lowercase -or $Uppercase -or $Numbers -or $Symbols)) {
             throw "You must specify one of: -Lowercase -Uppercase -Numbers -Symbols"
         }
 
         # Specifies bitmap values for character sets selected.
-        $CHARSET_LOWER=1
-        $CHARSET_UPPER=2
-        $CHARSET_NUMBER=4
-        $CHARSET_SYMBOL=8
+        $CHARSET_LOWER = 1
+        $CHARSET_UPPER = 2
+        $CHARSET_NUMBER = 4
+        $CHARSET_SYMBOL = 8
 
         # Creates character arrays for the different character classes, based on ASCII character values.
-        $charsLower=97..122 | %{ [Char] $_ }
-        $charsUpper=65..90 | %{ [Char] $_ }
-        $charsNumber=48..57 | %{ [Char] $_ }
-        $charsSymbol=35,36,40,41,42,44,45,46,47,58,59,63,64,92,95 | %{ [Char] $_ }
+        $charsLower = 97..122 | % { [Char] $_ }
+        $charsUpper = 65..90 | % { [Char] $_ }
+        $charsNumber = 48..57 | % { [Char] $_ }
+        $charsSymbol = 35, 36, 40, 41, 42, 44, 45, 46, 47, 58, 59, 63, 64, 92, 95 | % { [Char] $_ }
     }
-    Process
-    {
+    Process {
         # Contains the array of characters to use.
-        $charList=@()
+        $charList = @()
         # Contains bitmap of the character sets selected.
-        $charSets=0
-        if ($Lowercase)
-        {
-            $charList+=$charsLower
-            $charSets=$charSets -bor $CHARSET_LOWER
+        $charSets = 0
+        if ($Lowercase) {
+            $charList += $charsLower
+            $charSets = $charSets -bor $CHARSET_LOWER
         }
-        if ($Uppercase)
-        {
-            $charList+=$charsUpper
-            $charSets=$charSets -bor $CHARSET_UPPER
+        if ($Uppercase) {
+            $charList += $charsUpper
+            $charSets = $charSets -bor $CHARSET_UPPER
         }
-        if ($Numbers)
-        {
-            $charList+=$charsNumber
-            $charSets=$charSets -bor $CHARSET_NUMBER
+        if ($Numbers) {
+            $charList += $charsNumber
+            $charSets = $charSets -bor $CHARSET_NUMBER
         }
-        if ($Symbols)
-        {
-            $charList+=$charsSymbol
-            $charSets=$charSets -bor $CHARSET_SYMBOL
+        if ($Symbols) {
+            $charList += $charsSymbol
+            $charSets = $charSets -bor $CHARSET_SYMBOL
         }
 
         <#
@@ -100,154 +92,149 @@ function New-RandomPassword
         .EXAMPLE
             Test-StringContents i string
         #>
-        function Test-StringContents([String] $test, [Char[]] $chars)
-        {
-            foreach ($char in $test.ToCharArray())
-            {
-                if ($chars -ccontains $char)
-                {
+        function Test-StringContents([String] $test, [Char[]] $chars) {
+            foreach ($char in $test.ToCharArray()) {
+                if ($chars -ccontains $char) {
                     return $true
                 }
             }
             return $false
         }
 
-        do
-        {
+        do {
             # No character classes matched yet.
-            $flags=0
-            $output=""
+            $flags = 0
+            $output = ""
             # Create output string containing random characters.
-            1..$Length | % { $output+=$charList[(get-random -maximum $charList.Length)] }
+            1..$Length | % { $output += $charList[(get-random -maximum $charList.Length)] }
 
             # Check if character classes match.
-            if ($Lowercase)
-            {
-                if (Test-StringContents $output $charsLower)
-                {
-                    $flags=$flags -bor $CHARSET_LOWER
+            if ($Lowercase) {
+                if (Test-StringContents $output $charsLower) {
+                    $flags = $flags -bor $CHARSET_LOWER
                 }
             }
-            if ($Uppercase)
-            {
-                if (Test-StringContents $output $charsUpper)
-                {
-                    $flags=$flags -bor $CHARSET_UPPER
+            if ($Uppercase) {
+                if (Test-StringContents $output $charsUpper) {
+                    $flags = $flags -bor $CHARSET_UPPER
                 }
             }
-            if ($Numbers)
-            {
-                if (Test-StringContents $output $charsNumber)
-                {
-                    $flags=$flags -bor $CHARSET_NUMBER
+            if ($Numbers) {
+                if (Test-StringContents $output $charsNumber) {
+                    $flags = $flags -bor $CHARSET_NUMBER
                 }
             }
-            if ($Symbols)
-            {
-                if (Test-StringContents $output $charsSymbol)
-                {
-                    $flags=$flags -bor $CHARSET_SYMBOL
+            if ($Symbols) {
+                if (Test-StringContents $output $charsSymbol) {
+                    $flags = $flags -bor $CHARSET_SYMBOL
                 }
             }
         }
         until ($flags -eq $charSets)
     }
-    End
-    {
-    	$output
+    End {
+        $output
     }
 }
 
 Function Get-RandomPassword {
 
-	$wordList = Get-Content -Path ".\wordlist.txt"
-	$rdm = $wordList | Get-Random -Maximum $wordList.count | Select-Object -First 1
-	$tmpPassword = (Get-Culture).TextInfo.ToTitleCase($wordList[$rdm])
+    $wordList = Get-Content -Path ".\wordlist.txt"
+    $rdm = $wordList | Get-Random -Maximum $wordList.count | Select-Object -First 1
+    $tmpPassword = (Get-Culture).TextInfo.ToTitleCase($wordList[$rdm])
 
-	if($tmpPassword.Length -ge 10) {
-		$tmpPassword = -join($tmpPassword, ( | Get-Random ) , (Get-Random -Maximum 1000))
-	}
-	else {
+    $asciiNumbers = $null
+    $asciiSpecials = $null
 
-	}
+    For ($a = 48; $a -le 57; $a++) { $asciiNumbers += , [char][byte]$a }
+    33, 35, 36, 37, 38, 63, 94 | Foreach-Object { $asciiSpecials += , [char][byte]$_ }
 
-	Write-Host $tmpPassword
+
+    if ($tmpPassword.Length -ge 10) {
+        $tmpPassword = -join ($tmpPassword, ( $asciiSpecials | Get-Random ) , ( $asciiNumbers | Get-Random ))
+    }
+    else {
+        $needed = 10 - $tmpPassword.Length
+        $ascii = $asciiNumbers + $asciiSpecials
+        $tmpPassword = -join ($tmpPassword, ( $ascii | Get-Random -Count $needed ) )
+    }
+
+	return $tmpPassword
 }
 
 Function Add-DTLRAccounts {
-	Param (
-		[Parameter(Mandatory=$true)]
-		[ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
-		[ValidatePattern('\.csv$')]
-		[string]$File
-	)
+    Param (
+        [Parameter(Mandatory = $true)]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
+        [ValidatePattern('\.csv$')]
+        [string]$File
+    )
 
-	$Accts = Import-Csv -Path $File -Delimiter ","
+    $Accts = Import-Csv -Path $File -Delimiter ","
 
-	ForEach ($Acct in $Accts) {
-		$storeNumber = $Acct.dtlr_key
-		$storeFirstName = $Acct.dtlr_key
-		$storeLastName = $Acct.store_long
-		$storeDisplayName = $storeFirstName + " " + $storeLastName
-		$OU = "OU=Villa,OU=Stores,OU=Users,OU=Corporate Office,OU=DTLR,DC=levtrannt,DC=lan"
-		$UPN = $Acct.dtlr_key + "@dtlr.com"
+    ForEach ($Acct in $Accts) {
+        $storeNumber = $Acct.dtlr_key
+        $storeFirstName = $Acct.dtlr_key
+        $storeLastName = $Acct.store_long
+        $storeDisplayName = $storeFirstName + " " + $storeLastName
+        $OU = "OU=Villa,OU=Stores,OU=Users,OU=Corporate Office,OU=DTLR,DC=levtrannt,DC=lan"
+        $UPN = $Acct.dtlr_key + "@dtlr.com"
 
-		New-ADUser -Name "$storeDisplayName" -DisplayName "$storeDisplayName" -SamAccountName $Acct.dtlr_key
-		 -GivenName $Acct.dtlr_key -Surname $Acct.store_long -UserPrincipalName $UPN -Path "$OU"
-		 -PasswordNeverExpires $true -ChangePasswordAtLogon $false -CannotChangePassword $true -Department "Operations"
-		 -StreetAddress $Acct.store_address -PostalCode $Acct.store_zip -State $Acct.store_state -City $Acct.store_city
-	}
+        New-ADUser -Name "$storeDisplayName" -DisplayName "$storeDisplayName" -SamAccountName $Acct.dtlr_key
+        -GivenName $Acct.dtlr_key -Surname $Acct.store_long -UserPrincipalName $UPN -Path "$OU"
+        -PasswordNeverExpires $true -ChangePasswordAtLogon $false -CannotChangePassword $true -Department "Operations"
+        -StreetAddress $Acct.store_address -PostalCode $Acct.store_zip -State $Acct.store_state -City $Acct.store_city
+    }
 }
 
 Function Add-DTLRAccountsExchange {
-	Param (
-		[Parameter(Mandatory=$true)]
-		[ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
-		[ValidatePattern('\.csv$')]
-		[string]$File
-	)
+    Param (
+        [Parameter(Mandatory = $true)]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
+        [ValidatePattern('\.csv$')]
+        [string]$File
+    )
 
-	$Accts = Import-Csv -Path $File -Delimiter ","
-	$SourceGroups = Get-ADUser "015" -Property MemberOf | ForEach-Object {
-		$_.MemberOf | Get-ADGroup | Select-Object Name -ExpandProperty Name | sort name
-	}
+    $Accts = Import-Csv -Path $File -Delimiter ","
+    $SourceGroups = Get-ADUser "015" -Property MemberOf | ForEach-Object {
+        $_.MemberOf | Get-ADGroup | Select-Object Name -ExpandProperty Name | sort name
+    }
 
-	ForEach ($Acct in $Accts) {
-		$storeNumber = $Acct.dtlr_key
-		$storeFirstName = $Acct.dtlr_key
-		$storeLastName = $Acct.store_long
-		$storeDisplayName = $storeFirstName + " " + $storeLastName
-		$OU = "OU=Villa,OU=Stores,OU=Users,OU=Corporate Office,OU=DTLR,DC=levtrannt,DC=lan"
-		$UPN = $Acct.dtlr_key + "@dtlr.com"
+    ForEach ($Acct in $Accts) {
+        $storeDisplayName = $Acct.dtlr_key + " " + $Acct.store_long
+        $OU = "OU=Villa,OU=Stores,OU=Users,OU=Corporate Office,OU=DTLR,DC=levtrannt,DC=lan"
+        $UPN = $Acct.dtlr_key + "@dtlr.com"
 
-		$password = ""
+        $password = Get-RandomPassword
 
-		New-Mailbox
-			-UserPrincipalName $UPN
-			-Password
-			-Database "DB_Stores"
-			-Name "$storeDisplayName"
-			-DisplayName "$storeDisplayName"
-			-SamAccountName $Acct.dtlr_key
-			-FirstName $Acct.dtlr_key
-			-LastName $Acct.store_long
-			-OrganizationalUnit "$OU"
-			-RetentionPolicy "DTLR_14_Day"
-		 	-ResetPasswordOnNextLogon $false
+        New-Mailbox
+        -UserPrincipalName $UPN
+        -Password (ConvertTo-SecureString $password -AsPlainText -Force)
+        -Database "DB_Stores"
+        -Name "$storeDisplayName"
+        -DisplayName "$storeDisplayName"
+        -SamAccountName $Acct.dtlr_key
+        -FirstName $Acct.dtlr_key
+        -LastName $Acct.store_long
+        -OrganizationalUnit "$OU"
+        -RetentionPolicy "DTLR_14_Day"
+        -ResetPasswordOnNextLogon $false
 
-		Get-ADUser -Filter "UserPrincipalName -eq '$UPN'" |
-			Set-ADUser -Replace @{
-				Department = "Operations";
-				PasswordNeverExpires = $true;
-				CannotChangePassword = $true;
-				StreeAddress = $Acct.store_address;
-				PostalCode = $Acct.store_zip;
-				State = $Acct.store_state;
-				City = $Acct.store_city;
-			}
+        Get-ADUser -Filter "UserPrincipalName -eq '$UPN'" |
+            Set-ADUser -Replace @{
+            Department           = "Operations";
+            PasswordNeverExpires = $true;
+            CannotChangePassword = $true;
+            StreeAddress         = $Acct.store_address;
+            PostalCode           = $Acct.store_zip;
+            State                = $Acct.store_state;
+            City                 = $Acct.store_city;
+        }
 
-		ForEach ($Group in $SourceGroups) {
-			Add-ADGroupMember $Group -Member $storeNumber
+        ForEach ($Group in $SourceGroups) {
+            Add-ADGroupMember $Group -Member $Acct.dtlr_key
 		}
-	}
+
+		"$Acct.dtlr_key, $UPN, $Acct.dtlr_key, $password, $OU" | Out-File -FilePath ".\output.txt" -Append
+    }
 }
