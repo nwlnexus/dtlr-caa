@@ -151,12 +151,16 @@ Function Get-RandomPassword {
 
 
     if ($tmpPassword.Length -ge 10) {
-        $tmpPassword = -join ($tmpPassword, ( $asciiSpecials | Get-Random ) , ( $asciiNumbers | Get-Random ))
+		$n = $asciiSpecials | Get-Random
+		$s = $asciiNumbers | Get-Random
+        $tmpPassword = -join ($tmpPassword, $n, $s)
     }
     else {
         $needed = 10 - $tmpPassword.Length
-        $ascii = $asciiNumbers + $asciiSpecials
-        $tmpPassword = -join ($tmpPassword, ( $ascii | Get-Random -Count $needed ) )
+		$ascii = $asciiNumbers + $asciiSpecials
+		$randomSegment = $ascii | Get-Random -Count $needed
+		$randomSegment = -join $randomSegment
+        $tmpPassword = -join ($tmpPassword, $randomSegment )
     }
 
 	return $tmpPassword
