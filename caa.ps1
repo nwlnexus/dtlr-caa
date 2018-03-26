@@ -173,6 +173,7 @@ Function Add-DTLRAccounts {
         [string]$File
     )
 
+	$ADServer = "GLADIATOR"
     $Accts = Import-Csv -Path $File -Delimiter ","
 
     ForEach ($Acct in $Accts) {
@@ -197,7 +198,7 @@ Function Add-DTLRAccountsExchange {
         [ValidatePattern('\.csv$')]
         [string]$File
     )
-
+	$ADServer = "GLADIATOR"
     $Accts = Import-Csv -Path $File -Delimiter ","
     $SourceGroups = Get-ADUser "015" -Property MemberOf | ForEach-Object {
         $_.MemberOf | Get-ADGroup | Select-Object Name -ExpandProperty Name | sort name
@@ -227,9 +228,9 @@ Function Add-DTLRAccountsExchange {
 			-ResetPasswordOnNextLogon $false
 
 
-		Get-ADUser -Server "GLADIATOR" -Filter "UserPrincipalName -eq '$UPN'" | `
+		Get-ADUser -Server $ADServer -Filter "UserPrincipalName -eq '$UPN'" | `
 			Set-ADUser `
-				-Server "GLADIATOR"
+				-Server $ADServer
 				-CannotChangePassword $true `
 				-PasswordNeverExpires $true `
 				-City ($Acct.store_city).trim() `
@@ -251,7 +252,7 @@ Function Add-DTLRAccountsExchange {
 		Get-ADUser -Server "GLADIATOR" -Filter "UserPrincipalName -eq '$UPN'" -Properties '*' | Out-File -FilePath ".\adprops.txt" -Append
 
         ForEach ($Group in $SourceGroups) {
-            Add-ADGroupMember $Group -Members $storeNumber
+            Add-ADGroupMember -Server $ADServer -Identity $Group -Members $storeNumber
 		}
 
 		"$storeNumber, $UPN, $password" | Out-File -FilePath ".\user_passwords.txt" -Append
