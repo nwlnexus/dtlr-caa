@@ -236,18 +236,19 @@ Function Add-DTLRAccountsExchange {
 				-City ($Acct.store_city).trim() `
 				-Organization "VILLA" `
 				-Department "Operations" `
-				-Office "($Acct.region_key).trim()" `
+				-Office ($Acct.region_key).trim() `
 				-StreetAddress ($Acct.store_address).trim() `
 				-PostalCode ($Acct.store_zip).trim() `
 				-State ($Acct.store_state).trim() `
 				-OfficePhone $storePhone `
 				-HomePage 'https://www.ruvilla.com' `
-				-Replace @{ c = "US"; co = "United States";	countrycode = 840;	ipPhone = $Acct.sped_dial;	}
+				-Replace @{ c = "US"; co = "United States";	countrycode = 840;	ipphone = $Acct.sped_dial;	}
 
 		Get-ADUser -Server "GLADIATOR" -Filter "UserPrincipalName -eq '$UPN'" -Properties '*' | Out-File -FilePath ".\adprops.txt" -Append
+		$storeDN = Get-ADUser $storeNumber
 
         ForEach ($Group in $SourceGroups) {
-            Add-ADGroupMember -Server $ADServer -Identity $Group -Members $storeNumber
+            Add-ADGroupMember -Identity $Group -Members $storeDN -Server $ADServer
 		}
 
 		"$storeNumber, $UPN, $password" | Out-File -FilePath ".\user_passwords.txt" -Append
