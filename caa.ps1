@@ -227,20 +227,27 @@ Function Add-DTLRAccountsExchange {
         	-ResetPasswordOnNextLogon $false
 
         Get-ADUser -Filter "UserPrincipalName -eq '$UPN'" |
-            Set-ADUser -Replace @{
-			Organization 		 = "VILLA";
-			Department           = "Operations";
-            PasswordNeverExpires = $true;
-            CannotChangePassword = $true;
-            StreetAddress        = ($Acct.store_address).trim();
-            PostalCode           = ($Acct.store_zip).trim();
-            State                = ($Acct.store_state).trim();
-			City                 = ($Acct.store_city).trim();
-			OfficePhone			 = $storePhone;
-        }
+			Set-ADUser `
+				-CannotChangePassword $true `
+				-PasswordNeverExpires $true `
+				-City ($Acct.store_city).trim() `
+				-Organization "VILLA" `
+				-Department "Operations" `
+				-Office "($Acct.region_key).trim()" `
+				-StreetAddress ($Acct.store_address).trim() `
+				-PostalCode ($Acct.store_zip).trim() `
+				-State ($Acct.store_state).trim() `
+				-OfficePhone $storePhone `
+				-HomePage 'https://www.ruvilla.com'
+				-Replace @{
+					c				 	 = "US";
+					co                   = "United States";
+					countrycode          = 840;
+					ipPhone				 = $Acct.sped_dial;
+    			}
 
         ForEach ($Group in $SourceGroups) {
-            Add-ADGroupMember $Group -Member $Acct.dtlr_key
+            Add-ADGroupMember $Group -Member $storeNumber
 		}
 
 		"$storeNumber, $UPN, $password" | Out-File -FilePath ".\output.txt" -Append
