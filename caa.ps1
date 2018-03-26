@@ -205,9 +205,12 @@ Function Add-DTLRAccountsExchange {
 
 	$ADServer = "GLADIATOR"
     $Accts = Import-Csv -Path $File -Delimiter ","
-    $SourceGroups = Get-ADUser "015" -Property MemberOf | ForEach-Object {
-        $_.MemberOf | Get-ADGroup | Select-Object Name -ExpandProperty Name | sort name
+    [System.Collections.ArrayList]$SourceGroups = Get-ADUser "015" -Property MemberOf | ForEach-Object {
+        $_.MemberOf | Get-ADGroup | Select-Object Name -ExpandProperty Name | Sort-Object Name
 	}
+
+	$SourceGroups.Remove("0 Baltimore Stores DL")
+	$SourceGroups.Remove("Mall Stores DL")
 
 	Write-Host "Checking for adprops.txt..."
 	if (Test-Path "adprops.txt") {
@@ -231,7 +234,8 @@ Function Add-DTLRAccountsExchange {
 
         $password = Get-RandomPassword
 
-        New-Mailbox `
+		New-Mailbox `
+			-DomainController $ADServer `
         	-UserPrincipalName $UPN `
         	-Password (ConvertTo-SecureString $password -AsPlainText -Force) `
         	-Database "DB_Stores" `
@@ -243,6 +247,9 @@ Function Add-DTLRAccountsExchange {
         	-OrganizationalUnit $OU `
         	-RetentionPolicy "DTLR_14_Day" `
 			-ResetPasswordOnNextLogon $false
+
+		$forwardAddress = "Store" + $storeNumber.trimstart(1) + "@ruvilla.com"
+		Set-Mailbox $UPN -DeliverToMailboxAndForward $true -ForwardingSmtpAddress $forwardAddress -DomainController $ADServer
 
 
 		Get-ADUser -Server $ADServer -Filter "UserPrincipalName -eq '$UPN'" | Set-ADUser `
@@ -260,8 +267,8 @@ Function Add-DTLRAccountsExchange {
 			-HomePage 'https://www.ruvilla.com' `
 			-Replace @{ c = "US"; co = "United States";	countrycode = 840;	ipphone = $Acct.speed_dial;	}
 
-		Get-ADUser -Server "GLADIATOR" -Filter "UserPrincipalName -eq '$UPN'" -Properties '*' | Out-File -FilePath ".\adprops.txt" -Append
-		$storeDN = Get-ADUser $storeNumber
+		Get-ADUser -Server $ADServer -Filter "UserPrincipalName -eq '$UPN'" -Properties '*' | Out-File -FilePath ".\adprops.txt" -Append
+		$storeDN = Get-ADUser -Server $ADServer $storeNumber
 
         ForEach ($Group in $SourceGroups) {
             Add-ADGroupMember -Identity $Group -Members $storeDN -Server $ADServer
