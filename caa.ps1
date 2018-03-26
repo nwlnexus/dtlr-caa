@@ -226,7 +226,7 @@ Function Add-DTLRAccountsExchange {
         	-RetentionPolicy "DTLR_14_Day"
         	-ResetPasswordOnNextLogon $false
 
-        Get-ADUser -Filter "UserPrincipalName -eq '$UPN'" |
+        Get-ADUser -Filter "UserPrincipalName -eq '$UPN'" | `
 			Set-ADUser `
 				-CannotChangePassword $true `
 				-PasswordNeverExpires $true `
