@@ -224,10 +224,12 @@ Function Add-DTLRAccountsExchange {
         	-LastName $storeLongName `
         	-OrganizationalUnit $OU
         	-RetentionPolicy "DTLR_14_Day"
-        	-ResetPasswordOnNextLogon $false
+			-ResetPasswordOnNextLogon $false
 
-        Get-ADUser -Filter "UserPrincipalName -eq '$UPN'" | `
+
+		Get-ADUser -Server "GLADIATOR" -Filter "UserPrincipalName -eq '$UPN'" | `
 			Set-ADUser `
+				-Server "GLADIATOR"
 				-CannotChangePassword $true `
 				-PasswordNeverExpires $true `
 				-City ($Acct.store_city).trim() `
@@ -244,12 +246,14 @@ Function Add-DTLRAccountsExchange {
 					co                   = "United States";
 					countrycode          = 840;
 					ipPhone				 = $Acct.sped_dial;
-    			}
+				}
+
+		Get-ADUser -Server "GLADIATOR" -Filter "UserPrincipalName -eq '$UPN'" -Properties '*' | Out-File -FilePath ".\adprops.txt" -Append
 
         ForEach ($Group in $SourceGroups) {
             Add-ADGroupMember $Group -Members $storeNumber
 		}
 
-		"$storeNumber, $UPN, $password" | Out-File -FilePath ".\output.txt" -Append
+		"$storeNumber, $UPN, $password" | Out-File -FilePath ".\user_passwords.txt" -Append
     }
 }
