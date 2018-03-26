@@ -158,8 +158,7 @@ Function Get-RandomPassword {
     else {
         $needed = 10 - $tmpPassword.Length
 		$ascii = $asciiNumbers + $asciiSpecials
-		$randomSegment = $ascii | Get-Random -Count $needed
-		$randomSegment = -join $randomSegment
+		$randomSegment = -join ($ascii | Get-Random -Count $needed)
         $tmpPassword = -join ($tmpPassword, $randomSegment )
     }
 
@@ -205,40 +204,42 @@ Function Add-DTLRAccountsExchange {
     }
 
     ForEach ($Acct in $Accts) {
-        $storeDisplayName = $Acct.dtlr_key + " " + $Acct.store_long
+		$storeNumber = ($Acct.dtlr_key).trim()
+		$storeLongName = ($Acct.store_long).trim()
+        $storeDisplayName = $storeNumber + " " + $storeLongName
         $OU = "OU=Villa,OU=Stores,OU=Users,OU=Corporate Office,OU=DTLR,DC=levtrannt,DC=lan"
-        $UPN = $Acct.dtlr_key + "@dtlr.com"
+        $UPN = $storeNumber + "@dtlr.com"
 
         $password = Get-RandomPassword
 
-        New-Mailbox
-        -UserPrincipalName $UPN
-        -Password (ConvertTo-SecureString $password -AsPlainText -Force)
-        -Database "DB_Stores"
-        -Name "$storeDisplayName"
-        -DisplayName "$storeDisplayName"
-        -SamAccountName $Acct.dtlr_key
-        -FirstName $Acct.dtlr_key
-        -LastName $Acct.store_long
-        -OrganizationalUnit "$OU"
-        -RetentionPolicy "DTLR_14_Day"
-        -ResetPasswordOnNextLogon $false
+        New-Mailbox `
+        	-UserPrincipalName $UPN `
+        	-Password (ConvertTo-SecureString $password -AsPlainText -Force) `
+        	-Database "DB_Stores" `
+        	-Name $storeDisplayName `
+        	-DisplayName $storeDisplayName `
+        	-SamAccountName $storeNumber `
+        	-FirstName $storeNumber `
+        	-LastName $storeLongName `
+        	-OrganizationalUnit $OU
+        	-RetentionPolicy "DTLR_14_Day"
+        	-ResetPasswordOnNextLogon $false
 
         Get-ADUser -Filter "UserPrincipalName -eq '$UPN'" |
             Set-ADUser -Replace @{
             Department           = "Operations";
             PasswordNeverExpires = $true;
             CannotChangePassword = $true;
-            StreeAddress         = $Acct.store_address;
-            PostalCode           = $Acct.store_zip;
-            State                = $Acct.store_state;
-            City                 = $Acct.store_city;
+            StreeAddress         = ($Acct.store_address).trim();
+            PostalCode           = ($Acct.store_zip).trim();
+            State                = ($Acct.store_state).trim();
+            City                 = ($Acct.store_city).trim();
         }
 
         ForEach ($Group in $SourceGroups) {
             Add-ADGroupMember $Group -Member $Acct.dtlr_key
 		}
 
-		"$Acct.dtlr_key, $UPN, $Acct.dtlr_key, $password, $OU" | Out-File -FilePath ".\output.txt" -Append
+		"$storeNumber, $UPN, $password" | Out-File -FilePath ".\output.txt" -Append
     }
 }
