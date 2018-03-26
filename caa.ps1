@@ -247,7 +247,7 @@ Function Add-DTLRAccountsExchange {
     			}
 
         ForEach ($Group in $SourceGroups) {
-            Add-ADGroupMember $Group -Member $storeNumber
+            Add-ADGroupMember $Group -Members $storeNumber
 		}
 
 		"$storeNumber, $UPN, $password" | Out-File -FilePath ".\output.txt" -Append
