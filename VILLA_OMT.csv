@@ -95,20 +95,20 @@ dtlr_key,dtlr_code,store_long,store_short,store_address,store_city,store_state,s
 3101,3101,Mall of America,Mall of America,244 North Garden,Bloomington,MN,55425,P: 952-854-9114,Minnesota,3101,Raymond Maunu
 3102,3102,Pullman Park,Pullman Park,10824 South Doty Ave.,Chicago,IL,60628,P: 773-468-5837,Chicago South,3102,Henry Tunstall
 3103,3103,Governors Shopping Center,Governors Shopping Center,611 Governors Place,Bear,DE,19701,P: 302-834-1379,NJ/DE,3103,Tamyra Washington
-3104,3104,Torre Vista ,Torre Vista ,10325 Lake June Road,Dallas,TX,75217,P: 972-329-1062 ,Dallas TX,3104,Marcelino Colon
-3105,3105,Cooper Street Commons,Cooper Street Commons,1030 W. Arkansas Lane,Arlington,TX,76013,P: 817-459-2645,Ft. Worth TX,3105,Travis Towery
+4104,4104,Torre Vista ,Torre Vista ,10325 Lake June Road,Dallas,TX,75217,P: 972-329-1062 ,Dallas TX,4104,Marcelino Colon
+4105,4105,Cooper Street Commons,Cooper Street Commons,1030 W. Arkansas Lane,Arlington,TX,76013,P: 817-459-2645,Ft. Worth TX,4105,Travis Towery
 4106,4106,Trinity Mills (DK),Trinity Mills (DK),"3427 E. Trinity Mills Rd., Suite #900",Dallas,TX,75287,P: 972-306-9105,Dallas TX,4106,Marcelino Colon
 4107,4107,Denton (DK),Denton (DK),"2520 West University Dr., Suite #1160",Denton,TX,76201,P: 940-381-2416,Dallas TX,4107,Marcelino Colon
 3108,3108,Shingle Creek Crossing,Shingle Creek Crossing,1300 Shingle Creek Crossing,Brooklyn Center,MN,55430,P: 763-560-9537,Minnesota,3108,Raymond Maunu
 3109,3109,Fulton Street,Fulton Street,4 East Fulton Street,Grand Rapids,MI,49503,P: 616-458-3930,Detroit West,3109,Michael Arnold
 3110,3110,Muhlenberg Shopping Center,Muhlenberg Center,3262 N 5th St Highway,Reading,PA,19605,P: 610-929-2431,Central PA,3110,Winston Horshaw
 4111,4111,Downtown Dallas (DK),Downtown Dallas (DK),"5334 A-Ross Ave., Suite #875",Dallas,TX,75206,P: 214-826-8811,Dallas TX,4111,Marcelino Colon
-3112,3112,Webb Chapel,Webb Chapel,11719 Webb Chapel Road,Dallas,TX,75220,P: 972-241-0682,Dallas TX,3112,Marcelino Colon
-3113,3113,Garland,Garland,1104 South First Street,Garland ,TX,75040,P: 972-272-7959,Dallas TX,3113,Marcelino Colon
+4112,4112,Webb Chapel,Webb Chapel,11719 Webb Chapel Road,Dallas,TX,75220,P: 972-241-0682,Dallas TX,4112,Marcelino Colon
+4113,4113,Garland,Garland,1104 South First Street,Garland ,TX,75040,P: 972-272-7959,Dallas TX,4113,Marcelino Colon
 4116,4116,Cedar Hill/Duncanville(DK),Cedar Hill/Duncanville,"949 North Highway 67, Suite #349",Cedar Hill,TX,75104,P: 469-272-0099,Ft. Worth TX,4116,Travis Towery
-3117,3117,Oak Cliff,Oak Cliff,3417 Lancaster Rd,Dallas,TX,75216,P: 214-371-1884 ,Ft. Worth TX,3117,Travis Towery
+4117,4117,Oak Cliff,Oak Cliff,3417 Lancaster Rd,Dallas,TX,75216,P: 214-371-1884 ,Ft. Worth TX,4117,Travis Towery
 4118,4118,Fort Worth I-20 (DK),Fort Worth I-20 (DK),7636 McCart Avenue,Fort Worth,TX,76133,P: 817-294-7700,Ft. Worth TX,4118,Travis Towery
-3119,3119,Skillman,Skillman,"9203 Skillman Street, Suite 120",Dallas,TX,75243,P: 214-553-4562,Dallas TX,3119,Marcelino Colon
+4119,4119,Skillman,Skillman,"9203 Skillman Street, Suite 120",Dallas,TX,75243,P: 214-553-4562,Dallas TX,4119,Marcelino Colon
 3121,3121,King of Prussia Mall,King of Prussia Mall,"160 N Gulph Road, Space #2022",King of Prussia,PA,19406,P: 610-265-3940,Philadelphia,3121,Jermaine Williams
 3122,3122,Christiana Mall,Christiana Mall,435 Christiana Mall,Newark,DE,19702,P: 302-737-7215,NJ/DE,3122,Tamyra Washington
 3123,3123,Summit Mall,Summit Mall,3265 W. Market Street Space #656,Fair Lawn,OH,44333,P: 330-835-1438,Pittsburg/Ohio,3123,Edward Hrabik

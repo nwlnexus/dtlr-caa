@@ -206,7 +206,8 @@ Function Add-DTLRAccountsExchange {
     ForEach ($Acct in $Accts) {
 		$storeNumber = ($Acct.dtlr_key).trim()
 		$storeLongName = ($Acct.store_long).trim()
-        $storeDisplayName = $storeNumber + " " + $storeLongName
+		$storeDisplayName = $storeNumber + " " + $storeLongName
+		$storePhone = ($Acct.store_phone).trim() -replace 'PH: ', ""
         $OU = "OU=Villa,OU=Stores,OU=Users,OU=Corporate Office,OU=DTLR,DC=levtrannt,DC=lan"
         $UPN = $storeNumber + "@dtlr.com"
 
@@ -227,13 +228,15 @@ Function Add-DTLRAccountsExchange {
 
         Get-ADUser -Filter "UserPrincipalName -eq '$UPN'" |
             Set-ADUser -Replace @{
-            Department           = "Operations";
+			Organization 		 = "VILLA";
+			Department           = "Operations";
             PasswordNeverExpires = $true;
             CannotChangePassword = $true;
-            StreeAddress         = ($Acct.store_address).trim();
+            StreetAddress        = ($Acct.store_address).trim();
             PostalCode           = ($Acct.store_zip).trim();
             State                = ($Acct.store_state).trim();
-            City                 = ($Acct.store_city).trim();
+			City                 = ($Acct.store_city).trim();
+			OfficePhone			 = $storePhone;
         }
 
         ForEach ($Group in $SourceGroups) {
