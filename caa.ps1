@@ -230,7 +230,7 @@ Function Add-DTLRAccountsExchange {
 
 		Get-ADUser -Server $ADServer -Filter "UserPrincipalName -eq '$UPN'" | `
 			Set-ADUser `
-				-Server $ADServer
+				-Server $ADServer `
 				-CannotChangePassword $true `
 				-PasswordNeverExpires $true `
 				-City ($Acct.store_city).trim() `
@@ -241,13 +241,8 @@ Function Add-DTLRAccountsExchange {
 				-PostalCode ($Acct.store_zip).trim() `
 				-State ($Acct.store_state).trim() `
 				-OfficePhone $storePhone `
-				-HomePage 'https://www.ruvilla.com'
-				-Replace @{
-					c				 	 = "US";
-					co                   = "United States";
-					countrycode          = 840;
-					ipPhone				 = $Acct.sped_dial;
-				}
+				-HomePage 'https://www.ruvilla.com' `
+				-Replace @{ c = "US"; co = "United States";	countrycode = 840;	ipPhone = $Acct.sped_dial;	}
 
 		Get-ADUser -Server "GLADIATOR" -Filter "UserPrincipalName -eq '$UPN'" -Properties '*' | Out-File -FilePath ".\adprops.txt" -Append
 
