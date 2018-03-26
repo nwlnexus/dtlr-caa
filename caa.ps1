@@ -196,13 +196,30 @@ Function Add-DTLRAccountsExchange {
         [Parameter(Mandatory = $true)]
         [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [ValidatePattern('\.csv$')]
-        [string]$File
-    )
+		[string]$File,
+		[string]$Server = "DEFIANT.LEVTRANNT.LAN"
+	)
+
+	$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "http://$Server/Powershell" -Authentication Kerberos
+	Import-PSSession $Session -AllowClobber
+
 	$ADServer = "GLADIATOR"
     $Accts = Import-Csv -Path $File -Delimiter ","
     $SourceGroups = Get-ADUser "015" -Property MemberOf | ForEach-Object {
         $_.MemberOf | Get-ADGroup | Select-Object Name -ExpandProperty Name | sort name
-    }
+	}
+
+	Write-Host "Checking for adprops.txt..."
+	if (Test-Path "adprops.txt") {
+		Write-Host "File exists. Removing..."
+		Clear-Content "adprops.txt" -Force
+	}
+
+	Write-Host "Checking for user_passwords.txt..."
+	if (Test-Path "user_passwords.txt") {
+		Write-Host "File exists. Removing..."
+		Clear-Content "user_passwords.txt" -Force
+	}
 
     ForEach ($Acct in $Accts) {
 		$storeNumber = ($Acct.dtlr_key).trim()
@@ -228,21 +245,20 @@ Function Add-DTLRAccountsExchange {
 			-ResetPasswordOnNextLogon $false
 
 
-		Get-ADUser -Server $ADServer -Filter "UserPrincipalName -eq '$UPN'" | `
-			Set-ADUser `
-				-Server $ADServer `
-				-CannotChangePassword $true `
-				-PasswordNeverExpires $true `
-				-City ($Acct.store_city).trim() `
-				-Organization "VILLA" `
-				-Department "Operations" `
-				-Office ($Acct.region_key).trim() `
-				-StreetAddress ($Acct.store_address).trim() `
-				-PostalCode ($Acct.store_zip).trim() `
-				-State ($Acct.store_state).trim() `
-				-OfficePhone $storePhone `
-				-HomePage 'https://www.ruvilla.com' `
-				-Replace @{ c = "US"; co = "United States";	countrycode = 840;	ipphone = $Acct.sped_dial;	}
+		Get-ADUser -Server $ADServer -Filter "UserPrincipalName -eq '$UPN'" | Set-ADUser `
+			-Server $ADServer `
+			-CannotChangePassword $true `
+			-PasswordNeverExpires $true `
+			-City ($Acct.store_city).trim() `
+			-Organization "VILLA" `
+			-Department "Operations" `
+			-Office ($Acct.region_key).trim() `
+			-StreetAddress ($Acct.store_address).trim() `
+			-PostalCode ($Acct.store_zip).trim() `
+			-State ($Acct.store_state).trim() `
+			-OfficePhone $storePhone `
+			-HomePage 'https://www.ruvilla.com' `
+			-Replace @{ c = "US"; co = "United States";	countrycode = 840;	ipphone = $Acct.speed_dial;	}
 
 		Get-ADUser -Server "GLADIATOR" -Filter "UserPrincipalName -eq '$UPN'" -Properties '*' | Out-File -FilePath ".\adprops.txt" -Append
 		$storeDN = Get-ADUser $storeNumber

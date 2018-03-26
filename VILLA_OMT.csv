@@ -1,4 +1,4 @@
-dtlr_key,dtlr_code,store_long,store_short,store_address,store_city,store_state,store_zip,store_phone,regioin_key,sped_dial,reg_dm_key
+dtlr_key,dtlr_code,store_long,store_short,store_address,store_city,store_state,store_zip,store_phone,region_key,speed_dial,reg_dm_key
 3002,3002,52nd Street,52nd Street,4 South 52nd Street,Philadelphia,PA,19139,P:  215-748-5794,Philadelphia,3002,Jermaine Williams
 3003,3003,Penn Street,Penn Street,"547 Penn Street, ",Reading,PA,19601,P:  610-376-9773,Central PA,3003,Winston Horshaw
 3004,3004,Harrisburg,Harrisburg,333 Market Street,Harrisburg,PA,17103,P:  717-236-4690,Central PA,3004,Winston Horshaw
