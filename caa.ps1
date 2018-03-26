@@ -248,7 +248,7 @@ Function Add-DTLRAccountsExchange {
         	-RetentionPolicy "DTLR_14_Day" `
 			-ResetPasswordOnNextLogon $false
 
-		$forwardAddress = "Store" + $storeNumber.trimstart(1) + "@ruvilla.com"
+		$forwardAddress = "Store" + $storeNumber.substring(1) + "@ruvilla.com"
 		Set-Mailbox $UPN -DeliverToMailboxAndForward $true -ForwardingSmtpAddress $forwardAddress -DomainController $ADServer
 
 
@@ -276,4 +276,27 @@ Function Add-DTLRAccountsExchange {
 
 		"$storeNumber, $UPN, $password" | Out-File -FilePath ".\user_passwords.txt" -Append
     }
+}
+
+Function Set-DTLRAccountsExchange {
+    Param (
+        [Parameter(Mandatory = $true)]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
+        [ValidatePattern('\.csv$')]
+		[string]$File,
+		[string]$Server = "DEFIANT.LEVTRANNT.LAN"
+	)
+
+	$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "http://$Server/Powershell" -Authentication Kerberos
+	Import-PSSession $Session -AllowClobber
+
+	$ADServer = "GLADIATOR"
+	$Accts = Import-Csv -Path $File -Delimiter ","
+
+	ForEach ($Acct in $Accts) {
+		$forwardAddress = ($Acct.dtlr_code).substring(1) + "@ruvilla.com"
+		$store = Get-ADUser ($Acct.dtlr_key).trim() -Properties EmailAddress -Server $ADServer | Select-Object EmailAddress
+		Set-Mailbox $store.EmailAddress -ForwardingSmtpAddress $forwardAddress
+		Get-Mailbox $store.EmailAddress | Format-List DeliverToMailboxAndForward, ForwardingAddress, ForwardingSmtpAddress
+	}
 }
