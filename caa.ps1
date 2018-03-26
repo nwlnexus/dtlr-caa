@@ -223,8 +223,8 @@ Function Add-DTLRAccountsExchange {
         	-SamAccountName $storeNumber `
         	-FirstName $storeNumber `
         	-LastName $storeLongName `
-        	-OrganizationalUnit $OU
-        	-RetentionPolicy "DTLR_14_Day"
+        	-OrganizationalUnit $OU `
+        	-RetentionPolicy "DTLR_14_Day" `
 			-ResetPasswordOnNextLogon $false
 
 
