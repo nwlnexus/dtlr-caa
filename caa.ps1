@@ -294,7 +294,7 @@ Function Set-DTLRAccountsExchange {
 	$Accts = Import-Csv -Path $File -Delimiter ","
 
 	ForEach ($Acct in $Accts) {
-		$forwardAddress = ($Acct.dtlr_code).substring(1) + "@ruvilla.com"
+		$forwardAddress = "Store" + ($Acct.dtlr_code).substring(1) + "@ruvilla.com"
 		$store = Get-ADUser ($Acct.dtlr_key).trim() -Properties EmailAddress -Server $ADServer | Select-Object EmailAddress
 		Set-Mailbox $store.EmailAddress -ForwardingSmtpAddress $forwardAddress
 		Get-Mailbox $store.EmailAddress | Format-List DeliverToMailboxAndForward, ForwardingAddress, ForwardingSmtpAddress
